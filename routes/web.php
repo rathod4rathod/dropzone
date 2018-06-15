@@ -42,5 +42,8 @@ Route::post('modules/create', 'ModuleController@saveModule');
 // Email related routes
 Route::get('mail/send', 'MailController@send');
 
+
 //DropZone
 Route::resource('dropZone', 'DropZoneController');
+Route::post('/dropzoneImageDelete', 'DropZoneController@dropzoneImageDelete');
+Route::get('/dropZone/delete/{id}', 'DropZoneController@destroy');

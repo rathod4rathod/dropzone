@@ -38,15 +38,17 @@
                   <div>
                       
                   </div>
-                  <button type="button" id="upload-all">Submit</button>
+                  
                 </form></div>
+                            <button type="button" id="upload-all" class="btn btn-primary" style="float: right;margin: 10px">Submit</button>
 	                </div>
                         <div class="row">
                             <div class="col-md-12" style="margin-top: 10px">
                                 @foreach($dataList as $val)
-                                <div class="col-md-2 dropzone-img">
+                                <div class="col-md-2 dropzone-img" id="dropZoneDelete{{$val->id}}">
                                     <img src="{{asset('public/dropzoneImage')}}{{'/'}}{{$val->image}}" >
-                                    <a href="javascript:void(0)" id="dropZoneDelete" onclick="dropZoneDelete()" >Remove Image</a>
+                                    <!--<a href="{{route('dropZone.destroy',$val->id)}}" id="dropZoneDelete">Remove Image</a>-->
+                                    <a href="javascript:void(0)" id="dropZoneDelete" onclick="dropZoneDelete({{$val->id}})" >Remove Image</a>
                                 </div>                                
                                 @endforeach
                             </div>
@@ -66,6 +68,11 @@
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script>
   //  $(document).ready(function(){
+  $.ajaxSetup({
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+});
     Dropzone.autoDiscover = false;    
     var myDropzone = new Dropzone("#demo-upload",
     {
@@ -77,10 +84,11 @@
         maxFiles: 10,
         addRemoveLinks:true    
     });
-    $('#upload-all').click(function () {
+    $('#upload-all').click(function () {            
         myDropzone.processQueue();
+        location. reload(true);
     });
-    function dropZoneDelete(){
+    function dropZoneDelete(id){
         swal({
             title: "Are you sure?",
             text: "Once deleted, you will not be able to recover this imaginary file!",
@@ -90,7 +98,18 @@
           })
           .then((willDelete) => {
             if (willDelete) {
-              swal("Poof! Your imaginary file has been deleted!", {
+               // alert("{{url('dropZone/dropzoneImageDelete')}}");
+            $.ajax({
+                url: "dropZone/delete/"+id,
+                type: 'GET',
+                dataType: "JSON",
+               data : {'id' : id},
+      
+               success:function(data){
+                  $('#dropZoneDelete'+id).remove();
+               }
+            });
+              swal(data.success, {
                 icon: "success",
               });
             } else {
