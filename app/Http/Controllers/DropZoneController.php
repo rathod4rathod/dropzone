@@ -17,7 +17,9 @@ class DropZoneController extends Controller
 {
     public function index()
     {
-        return view('dropZone.index');
+        $dataList = DropZone::all();
+        
+        return view('dropZone.index',  compact('dataList'));
     }
 
     public function store(Request $request)

@@ -4,6 +4,17 @@
 @endsection
 @section('content')
 <!-- Content Wrapper. Contains page content -->
+<style>
+    .dropzone-img img
+    {
+        width: auto;
+        max-width: 100%;
+    }
+    .dropzone-img {
+        margin: 0 auto;
+        text-align: center;
+    }
+</style>
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -30,6 +41,16 @@
                   <button type="button" id="upload-all">Submit</button>
                 </form></div>
 	                </div>
+                        <div class="row">
+                            <div class="col-md-12" style="margin-top: 10px">
+                                @foreach($dataList as $val)
+                                <div class="col-md-2 dropzone-img">
+                                    <img src="{{asset('public/dropzoneImage')}}{{'/'}}{{$val->image}}" >
+                                    <a href="javascript:void(0)" id="dropZoneDelete" onclick="dropZoneDelete()" >Remove Image</a>
+                                </div>                                
+                                @endforeach
+                            </div>
+                        </div>
 	            </div><!-- panel-body -->
 	        </div> <!-- PANEL END clients-messages -->
 
@@ -42,6 +63,7 @@
 @endsection
 @section('footerscript')
 <script src="{{ asset('public/dist/dropzone.js') }}"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script>
   //  $(document).ready(function(){
     Dropzone.autoDiscover = false;    
@@ -58,6 +80,24 @@
     $('#upload-all').click(function () {
         myDropzone.processQueue();
     });
+    function dropZoneDelete(){
+        swal({
+            title: "Are you sure?",
+            text: "Once deleted, you will not be able to recover this imaginary file!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+          })
+          .then((willDelete) => {
+            if (willDelete) {
+              swal("Poof! Your imaginary file has been deleted!", {
+                icon: "success",
+              });
+            } else {
+              swal("Your imaginary file is safe!");
+            }
+          });
+    }
 //});
 </script>
 @endsection
